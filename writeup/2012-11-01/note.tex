@@ -1,0 +1,99 @@
+\documentclass[10pt]{article}
+\usepackage{verbatim, amsmath,amssymb,amsthm,graphicx}
+\usepackage[margin=.5in,nohead,nofoot]{geometry}
+\usepackage{sectsty}
+\usepackage{float}
+\sectionfont{\normalsize}
+\subsectionfont{\small}
+
+\title{}
+\date{}
+\author{}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{definition}{Definition}[section]
+\newtheorem{example}{Example}[section]
+
+\newcommand{\argmin}[1]{\underset{#1}{\operatorname{argmin}}\text{ }}
+\newcommand{\argmax}[1]{\underset{#1}{\operatorname{argmax}}}
+\newcommand{\minimax}[2]{\argmin{#1}\underset{#2}{\operatorname{max}}}
+\newcommand{\bb}{\textbf{b}}
+
+\newcommand{\Var}{\text{Var }}
+\newcommand{\Cov}{\text{Cov }}
+
+
+\newenvironment{my_enumerate}{
+  \begin{enumerate}
+    \setlength{\itemsep}{1pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}}{\end{enumerate}
+}
+
+
+
+% Alter some LaTeX defaults for better treatment of figures:
+% See p.105 of [yas] elisp error!TeX Unbound'' for suggested values.
+% See pp. 199-200 of Lamport's [yas] elisp error!LaTeX'' book for details.
+% General parameters, for ALL pages:
+\renewcommand{\topfraction}{0.9}% max fraction of floats at top
+\renewcommand{\bottomfraction}{0.8}% max fraction of floats at bottom
+% Parameters for TEXT pages (not float pages):
+\setcounter{topnumber}{2}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{4}     % 2 may work better
+\setcounter{dbltopnumber}{2}    % for 2-column pages
+\renewcommand{\dbltopfraction}{0.9}% fit big float above 2-col. text
+\renewcommand{\textfraction}{0.07}% allow minimal text w. figs
+% Parameters for FLOAT pages (not text pages):
+\renewcommand{\floatpagefraction}{0.7}% require fuller float pages
+% N.B.: floatpagefraction MUST be less than topfraction !!
+\renewcommand{\dblfloatpagefraction}{0.7}% require fuller float pages
+
+% remember to use [htp] or [htpb] for placement
+
+
+
+
+
+\begin{document}
+\section*{Finding Eclipsing RR Lyrae}
+
+In Figure \ref{eclipsing} I plot the eclipsing RR Lyrae found in Ogle. When you subtract out the RR Lyrae component (by using a smoother), the residuals look a lot like a binary (left three plots are original source, right three plots are residuals). This is very uncommon, most RR Lyrae don't look like eclipsing binaries when you look at their residuals.
+
+\begin{figure}[h]
+  \begin{center}
+    \begin{includegraphics}[height=4in,width=6in]{eclipsing.pdf}
+      \caption{Eclipsing RR Lyrae. Three left plots are original light curve. Three right plots are after subtracting out RR Lyrae Component.\label{eclipsing}}
+    \end{includegraphics}
+  \end{center}
+\end{figure}
+
+
+
+With this in mind, I ran the following procedure:
+
+\begin{enumerate}
+\item Get 500 RR Lyrae AB in Galactic plane from OGLE. Also get the one known eclipsing RR Lyrae AB (it is also in the Galactic plane).
+\item Derive features for the RR Lyrae. Compute residuals = original curve - the periodic variation.
+\item Derive features for the residuals
+\item Also derive features for around 300 eclipsing debosscher sources (couldn't find any eclipsing category in OGLE)
+\item Run a random forest classifier of (Class 1: RR lyrae residuals) versus (Class 2: Debosscher eclipsing)
+\end{enumerate}
+
+My thought was that Random forest would separate these classes easily, except for possibly eclipsing RR Lyrae whose residuals will look like the Debosscher eclipsing sources. Below I plot the probability of eclipsing for the RR lyrae residuals and the Debosscher sources with some random scatter on the y-axis for readability.
+
+
+\begin{figure}[h]
+  \begin{center}
+    \begin{includegraphics}[height=4in,width=6in]{probabilities.pdf}
+      \caption{The red point in the eclipsing RR lyrae. The residuals light curve looks much more eclipsing like than any other RR lyrae.\label{probabilities}}
+    \end{includegraphics}
+  \end{center}
+\end{figure}
+
+
+
+So it looks like this method separates the ordinary RR lyrae from the single known eclipsing RR Lyrae. I'm thinking of scaling this up to run on all of the RR Lyrae in OGLE ($\sim$ 40,000) to see if any more have this very peculiar behavior. Any thoughts?
+
+
+\end{document}
