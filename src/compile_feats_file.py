@@ -55,14 +55,14 @@ if __name__ == "__main__":
 
     ## process original asas sources
     print "processing asas_orig files"
-    folder = "../data_processed/asas_orig/"
+    folder = "../data/features/asas_orig/"
     extension = ".xml"
-    fileout = "../data_processed/asas_orig.dat"
+    fileout = "../data/features/asas_orig.dat"
     compile_feats_file(folder,extension,fileout)
 
     ## process residual asas sources
     print "processing asas_residual files"
-    folder = "../data_processed/asas_residual/"
+    folder = "../data/features/asas_resid/"
     extension = ".xml"
-    fileout = "../data_processed/asas_residual.dat"
+    fileout = "../data/features/asas_resid.dat"
     compile_feats_file(folder,extension,fileout)

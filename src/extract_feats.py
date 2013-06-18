@@ -10,6 +10,7 @@ import sys
 from multiprocessing import Pool
 import os
 import warnings
+from compile_feats_file import compile_feats_file
 
 
 os.environ.update({"TCP_DIR":"TCP/"})
@@ -172,7 +173,7 @@ if __name__ == "__main__":
         ## folder for input, output, and file extension
         in_folder = "../data/raw/asas_tfe/"
 	out_orig = "../data/features/asas_orig/"
-        out_residual = "../data/features/asas_residual/"
+        out_residual = "../data/features/asas_resid/"
         extension = ".xml"
 
 	## get names of all files with extension in both folders
@@ -189,7 +190,19 @@ if __name__ == "__main__":
 	## construct arguments and run
 	args = map(lambda x: [in_folder + x, out_orig + x, out_residual + x],
 		   names)
-	print args
-        p = Pool(16)
+        p = Pool(2)
         p.map(derive_smoothed,args)
 
+        ## process original asas sources
+	print "processing asas_orig files"
+	folder = "../data/features/asas_orig/"
+	extension = ".xml"
+	fileout = "../data/features/asas_orig.dat"
+	compile_feats_file(folder,extension,fileout)
+
+        ## process residual asas sources
+	print "processing asas_residual files"
+	folder = "../data/features/asas_resid/"
+	extension = ".xml"
+	fileout = "../data/features/asas_resid.dat"
+	compile_feats_file(folder,extension,fileout)
