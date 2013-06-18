@@ -170,9 +170,9 @@ if __name__ == "__main__":
     
     if 1:
         ## folder for input, output, and file extension
-        in_folder = "../data/asas_tfe/"
-	out_orig = "../data_processed/asas_orig/"
-        out_residual = "../data_processed/asas_residual/"
+        in_folder = "../data/raw/asas_tfe/"
+	out_orig = "../data/features/asas_orig/"
+        out_residual = "../data/features/asas_residual/"
         extension = ".xml"
 
 	## get names of all files with extension in both folders
@@ -192,3 +192,4 @@ if __name__ == "__main__":
 	print args
         p = Pool(16)
         p.map(derive_smoothed,args)
+
