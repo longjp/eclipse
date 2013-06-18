@@ -15,7 +15,7 @@ columns <- c("freq1_harmonics_freq_0","p2p_scatter_2praw","skew","amplitude","fl
 
 
 
-df1 <- read.table("../../data_processed/cep_residual.dat",
+df1 <- read.table("../data/features/cep_resid.dat",
                   header=TRUE)
 df1$filename[1]
 df1$filename <- gsub("../data_processed/cep_residual/",
@@ -30,7 +30,7 @@ length(columns)
 length(df1)
 summary(df1)
 
-features = '../../data_processed/eclipse-rr.dat'
+features = '../data/features/eclipse.dat'
 data1 = read.table(features,sep=';',header=TRUE)
 names(data1)
 ## subset to just get eclipsing
@@ -88,7 +88,7 @@ plot(df2$eclipsing_prob,
 
 
 
-df3 <- read.table("../../data_processed/cep_orig.dat",
+df3 <- read.table("../data/features/cep_orig.dat",
                   header=TRUE)
 df3$filename <- gsub("../data_processed/cep_orig/","",df3$filename)
 
@@ -118,7 +118,7 @@ period
 period2
 fname <- gsub("../data_processed/cep_residual/","",
                   filenames[ii])
-tfe <- read.table(paste("../../data/ogle-cep-i/",
+tfe <- read.table(paste("../data/raw/ogle-cep-i/",
                         fname,
                         sep=""))
 DrawEclipsing2(tfe,period,period2,main=sub(".dat","",filenames[ii]))
@@ -138,7 +138,7 @@ filename <- "OGLE-LMC-RRLYR-03441.dat"
 period <- 2/(df3[df3$filename == filename,
                   "freq1_harmonics_freq_0"])
 period
-tfe <- read.table(paste("../../data/ogle-rr-i/",
+tfe <- read.table(paste("../data/raw/ogle-rr-i/",
                         filename,
                         sep=""))
 point.colors=FALSE

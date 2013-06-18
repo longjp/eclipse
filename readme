@@ -2,4 +2,18 @@ June 17, 2013
 
 Code for detecting Cepheids and Lyra that are components in eclipsing systems.
 
-test changes
+:::algorithm description:::
+Given a set of light curves, this algorithm ranks according to confidence that they are a cepheid or rr lyrae that is part of an eclipsing system. Specifically, the algorithm subtracts the pulsational variation of a light curve caused by the cepheid / RR lyrae component and then determines how much the residuals look like a binary star. See writeup for some more details.
+
+
+
+
+:::implementation details:::
+data/raw/ light curves (preferably belonging to the class cepheids or rr Lyrae) are stored here
+
+src/extract_feats.py estimates periods for these stars, smooths period folded light curves, computes light curve residuals, and then computes features for the light curve residuals. output is in data/features
+
+classifiers/X.R contains code for computing the ranking, using the features of the residual light curves and features from a set of binaries (data/features/eclipse.dat)
+
+
+

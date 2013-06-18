@@ -32,7 +32,7 @@ length(columns)
 length(df1)
 summary(df1)
 
-features = '../data/features/eclipse-rr.dat'
+features = '../data/features/eclipse.dat'
 data1 = read.table(features,sep=';',header=TRUE)
 names(data1)
 ## subset to just get eclipsing
