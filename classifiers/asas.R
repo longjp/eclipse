@@ -18,8 +18,7 @@ columns <- c("freq1_harmonics_freq_0","p2p_scatter_2praw","skew","amplitude","fl
 
 
 
-df1 <- read.table("../../data_processed/asas_residual.dat",
-                  header=TRUE)
+df1 <- read.table("../data/features/asas_resid.dat",header=TRUE)
 df1$filename[1]
 df1$filename <- gsub("../data_processed/asas_residual/",
                      "",
@@ -33,7 +32,7 @@ length(columns)
 length(df1)
 summary(df1)
 
-features = '../../data_processed/eclipse-rr.dat'
+features = '../data/features/eclipse-rr.dat'
 data1 = read.table(features,sep=';',header=TRUE)
 names(data1)
 ## subset to just get eclipsing
@@ -102,7 +101,7 @@ plot(df2$eclipsing_prob,
 
 
 
-df3 <- read.table("../../data_processed/asas_orig.dat",
+df3 <- read.table("../data/features/asas_orig.dat",
                   header=TRUE)
 df3$filename <- gsub("../data_processed/asas_orig/","",df3$filename)
 
@@ -118,11 +117,71 @@ filenames <- as.character(filenames)
 
 
 
+## load plotting function
+DrawEclipsing2 <- function(tfe,
+                           period,
+                           period2,
+                           smoother=TRUE,
+                           point.colors=FALSE,
+                           plot.unfolded=TRUE,
+                           plot.folded=TRUE,
+                           plot.folded.twice=TRUE,
+                           par=TRUE,
+                           plot.errors=TRUE,
+                           main="lightcurve"){
+  ## if source id is a list, grab a random l.c. to plot
+  if(par){
+    par(mfcol=c(3,2))
+  }
+
+  times_orig <- tfe[,1]
+  for(jj in c(1,2)){
+    ## plot the raw light curve
+    plotLightCurve(tfe,
+                   point.colors=point.colors,
+                   plot.errors=plot.errors,
+                   maintitle=main)
+    
+    ## prepare for folding, supsmu needs this
+    tfe[,1] = tfe[,1] - min(tfe[,1])  
+    tfe[,1] = (tfe[,1] %% period) / period
+
+    ## fold on twice period
+    if(plot.folded.twice){
+      plotLightCurve(tfe,xLabel="Phase",
+                     maintitle=period,point.colors=point.colors,
+                     plot.errors=plot.errors)
+      if(smoother){
+        line.smu = supsmu(tfe[,1],tfe[,2],periodic=TRUE)
+        lines(line.smu$x,line.smu$y,col='red',lty=1,lwd=2)
+      }
+    }  
+
+    ## fold on estimated period
+    tfe[,1] = (tfe[,1] %% .5) / .5
+    if(plot.folded){
+      plotLightCurve(tfe,xLabel="Phase",
+                     maintitle=period/2,
+                     plot.errors=plot.errors,
+                     point.colors=TRUE)  
+      if(smoother){
+        line.smu = supsmu(tfe[,1],tfe[,2],periodic=TRUE)
+        lines(line.smu$x,line.smu$y,col='red',lty=1,lwd=2)
+      }
+    }
+    tfe[,2] <- (tfe[,2] - line.smu$y[rank(tfe[,1])])
+    tfe[,1] <- times_orig
+    period <- period2
+  }
+}
+
+
+
+
 ii <- 0
 
 
 ii <- ii + 1
-
 
 period <- 2/(df3[df3$filename == filenames[ii],
                   "freq1_harmonics_freq_0"])
@@ -130,9 +189,9 @@ period2 <- 2/(df2[df2$filename == filenames[ii],
                   "freq1_harmonics_freq_0"])
 period
 period2
-fname <- gsub("../data_processed/asas_residual/","",
+fname <- gsub("../data/features/asas_resid/","",
                   filenames[ii])
-tfe <- read.table(paste("../../data/asas_tfe/",
+tfe <- read.table(paste("../data/raw/asas_tfe/",
                         fname,
                         sep=""))
 DrawEclipsing2(tfe,period,period2,main=sub(".dat","",filenames[ii]))
@@ -208,63 +267,6 @@ ReturnSmoothed <- function(tfe,
 }
 
 
-
-DrawEclipsing2 <- function(tfe,
-                           period,
-                           period2,
-                           smoother=TRUE,
-                           point.colors=FALSE,
-                           plot.unfolded=TRUE,
-                           plot.folded=TRUE,
-                           plot.folded.twice=TRUE,
-                           par=TRUE,
-                           plot.errors=TRUE,
-                           main="lightcurve"){
-  ## if source id is a list, grab a random l.c. to plot
-  if(par){
-    par(mfcol=c(3,2))
-  }
-
-  times_orig <- tfe[,1]
-  for(jj in c(1,2)){
-    ## plot the raw light curve
-    plotLightCurve(tfe,
-                   point.colors=point.colors,
-                   plot.errors=plot.errors,
-                   maintitle=main)
-    
-    ## prepare for folding, supsmu needs this
-    tfe[,1] = tfe[,1] - min(tfe[,1])  
-    tfe[,1] = (tfe[,1] %% period) / period
-
-    ## fold on twice period
-    if(plot.folded.twice){
-      plotLightCurve(tfe,xLabel="Phase",
-                     maintitle=period,point.colors=point.colors,
-                     plot.errors=plot.errors)
-      if(smoother){
-        line.smu = supsmu(tfe[,1],tfe[,2],periodic=TRUE)
-        lines(line.smu$x,line.smu$y,col='red',lty=1,lwd=2)
-      }
-    }  
-
-    ## fold on estimated period
-    tfe[,1] = (tfe[,1] %% .5) / .5
-    if(plot.folded){
-      plotLightCurve(tfe,xLabel="Phase",
-                     maintitle=period/2,
-                     plot.errors=plot.errors,
-                     point.colors=TRUE)  
-      if(smoother){
-        line.smu = supsmu(tfe[,1],tfe[,2],periodic=TRUE)
-        lines(line.smu$x,line.smu$y,col='red',lty=1,lwd=2)
-      }
-    }
-    tfe[,2] <- (tfe[,2] - line.smu$y[rank(tfe[,1])])
-    tfe[,1] <- times_orig
-    period <- period2
-  }
-}
 
 
 summary((1/df2$freq1_harmonics_freq_0[df2$classification=="eclipsing"]))
