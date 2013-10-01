@@ -13,7 +13,7 @@ import warnings
 from compile_feats_file import compile_feats_file
 
 
-os.environ.update({"TCP_DIR":"TCP/"})
+##os.environ.update({"TCP_DIR":"TCP/"})
 warnings.simplefilter("ignore",DeprecationWarning) 
 sys.path.append(os.path.abspath(os.environ.get("TCP_DIR") + 'Software/feature_extract'))
 sys.path.append(os.path.abspath(os.environ.get("TCP_DIR") + 'Software/feature_extract/Code'))
